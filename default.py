@@ -1,8 +1,7 @@
 import vlc
 import pafy
 
-import urllib.request
-import urllib.parse
+import urllib
 import json
 import re
 
@@ -64,11 +63,14 @@ def get_track_features(id):
     return track
 
 
+ids = get_track_ids('yellowazns123', '2x02jcUK9zbZg7r72Y0LTK')
+
 while True:
 
-    #get random song_id from playlist
-    ids = get_track_ids('yellowazns123', '2x02jcUK9zbZg7r72Y0LTK')
-    song = get_track_features(random.choice(ids))
+    #get random song_id from playlist, remove from list
+    song_id = random.choice(ids)
+    ids.remove(song_id)
+    song = get_track_features(song_id)
     track_name = song[0]
     artist = song[2]
     print(f"Track: {track_name}")
@@ -78,7 +80,7 @@ while True:
     print(search_input)
     query_string = urllib.parse.urlencode({"search_query" : search_input})
     html_content = urllib.request.urlopen("https://www.youtube.com/results?" + query_string)
-    video_ids = re.findall(r"watch\?v=(\S{11})", html_content.read().decode())
+    video_ids = re.findall(r"watch\?v=(\S{11})", html_content.read().decode('utf-8'))
     url = "https://www.youtube.com/watch?v=" + video_ids[0]
     print(video_ids[0])
 
